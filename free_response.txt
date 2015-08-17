@@ -22,7 +22,7 @@ What features did you end up using in your POI identifier, and what selection pr
 	-->printed a histogram to get a better sense of the distributions and determine weather or not the results of the mann whitney u test made sense.
 	-->looked up the definition of each of the features of interest to verify weather the observed patterns made sense.
 	-->Iteratively conducted a PCA decomposition, reducing the feature space each time until each component represented a unique feature.
-	-->Reduced three poi email features ("from this person to poi","from_poi to this person" and "shared receipt with poi") to a single principal component (namely "email_feature"), using pca.
+	-->Reduced three poi email features ("from this person to poi","from_poi to this person" and "shared receipt with poi") to a single principal component (namely "email_feature"), using pca (the addition of this feature significantly improved performance on all classifiers).
 	This process yielded the following features to represent the numerical dataset:
 		-"deferred_income", 
 		-"exercised_stock_options", 
@@ -36,19 +36,21 @@ What features did you end up using in your POI identifier, and what selection pr
 	-->extracted all words in the "from_emails" folder of each individual in the dataset (in order to get as close as possible of a representation of the individual's vocabulary).
 	-->assembled collective words into array, ran through a TFIDF vectorizer, and extracted the resulting feature values and names.	
 	-->removed all words used by fewer than 10 individuals, and greater than 30 individuals.
-	-->Normalized, and iteratively fit word values using SelectKBest with f_classif, removing all words representing name's, email addresses, or words with unclear significance.
+	-->Normalized word features using min_max scaler.
+	-->Iteratively fit word values using SelectKBest with f_classif, removing all words representing name's, email addresses, or words with unclear significance.
 	-->Created a pca decomposition of the word values resulting from the previous step.
+	-->Normalized Pca components using min_max scaler.
 	-->Fit the resulting pca features using SelectKBest with f_classif.
 	-->Tuned the number of word and pca features obtained from SelectKBest to the optimal values.
-	This process yielded 20 features used in the classification. Ultimately, this feature set (obtained from the email data) was used in the classification.
+	This process yielded 20 features used in the classification. Ultimately, this feature set (the pca features obtained from the email data) was used in the classification, since these features alone performed much better on the accuracy, precision and recall than any other combination of features and classifier that was tried.
 
 
 
 What algorithm did you end up using?  What other one(s) did you try? [relevant rubric item: “pick an algorithm”]
 
-	A gaussian naive bayes classifier was used on the email dataset. I also tried a dicision tree classifier, a k nearest neighbors classifier, a random forest classifier, an adaboost classifier, and a gaussian naive bayes classifier on the numerical dataset.
-	In addition to that, I created and tested my own classifier that combined the results of Gaussian naive bayes on the email dataset with the results of k nearest neighbors on the numerical dataset.
-
+	A gaussian naive bayes classifier was used on the pca features obtained from the email dataset. I also tried a dicision tree classifier, a k nearest neighbors classifier, a random forest classifier, an adaboost classifier, and a gaussian naive bayes classifier on the numerical dataset.
+	None of the classifiers used with the numerical dataset performed as well as the Gaussian Naive Bayes algorithm on the email dataset in accuracy and recall. K nearest neighbors, using the numerical dataset, was capable of acheiving perfect recall, but with a very low precision.
+	In addition to that, I created and tested my own classifier that combined the results of Gaussian naive bayes on the email dataset with the results of k nearest neighbors on the numerical dataset. This however resulted in a lower preformance.
 
 
 What does it mean to tune the parameters of an algorithm, and what can happen if you don’t do this well?  How did you tune the parameters of your particular algorithm?  (Some algorithms don’t have parameters that you need to tune--if this is the case for the one you picked, identify and briefly explain how you would have done it if you used, say, a decision tree classifier). [relevant rubric item: “tune the algorithm”]
@@ -62,12 +64,17 @@ What is validation, and what’s a classic mistake you can make if you do it wro
 
 	Validation is the process of evaluating the ability of a classifier to generalize to a larger population, by testing it on a dataset that is separate, but similar to the one it was trained on. Improper validation may allow for an overfit classifier to pass as a highly accurate solution.
 	Since this particular dataset was so small, k-fold cross validation was used in order to iteratively train and test the classifier on several different training and testing sets from the same dataset.
-
+	Also, because there were many more non-poi's than there were poi's, and because we are concerned mainly with detecting fraud, precision and recall were taken into account along with the measure of accuracy in determining the goodness of the fit.
 
 Give at least 2 evaluation metrics, and your average performance for each of them.  Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance. [relevant rubric item: “usage of evaluation metrics”]
-	Accuracy: 0.98024
-	Accuracy is the percentage of correct predictions. Accuracy alone can be a bit misleading however if the distribution of labels is uneven, as is the case with this dataset.
-	Precision: 0.89188	
-	In this case, the precision refers to 
 
- Also, because there were many more non-poi's than there were poi's, and because we are concerned mainly with detecting fraud, precision and recall were taken into account along with the measure of accuracy in determining the goodness of the fit.t
+	Accuracy: 0.98024
+	Accuracy is the percentage of correct predictions. This accuracy is really good, though accuracy alone can be a bit misleading if the distribution of labels is uneven, as is the case with this dataset.
+
+	Precision: 0.89188
+	Precision determines how good an algorithm is at distinguishing between a particular class (pois in this case) and all other classes when predicting that class. This value means that about 90% of the predictions of poi that the algorithm made were correct!
+
+	Recall: 0.93675
+	Recall determines how good an algorithm is at finding a particular class (pois in this case). This value means that the algorithm was able to find about 90% of the pois!
+
+
