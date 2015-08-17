@@ -1,0 +1,74 @@
+(dp0
+S'Timothy Belden'
+p1
+S'tim.belden@enron.com'
+p2
+sS'Richard Causey'
+p3
+S'richard.causey@enron.com'
+p4
+sS'Michael Kopper'
+p5
+S'michael.kopper@enron.com'
+p6
+sS'Mark Koenig'
+p7
+S'mark.koenig@enron.com'
+p8
+sS'Kenneth Rice'
+p9
+S'ken.rice@enron.com'
+p10
+sS'Scott Yeager'
+p11
+S'scott.yeager@enron.com'
+p12
+sS'Jeffrey Skilling'
+p13
+S'jeff.skilling@enron.com'
+p14
+sS'Andrew Fastow'
+p15
+S'andrew.fastow@enron.com'
+p16
+sS'Raymond Bowen'
+p17
+S'raymond.bowen@enron.com'
+p18
+sS'Wesley Colwell'
+p19
+S'wes.colwell@enron.com'
+p20
+sS'Rex Shelby'
+p21
+S'rex.shelby@enron.com'
+p22
+sS'Joseph Hirko'
+p23
+S'joe.hirko@enron.com'
+p24
+sS'David Delainey'
+p25
+S'david.delainey@enron.com'
+p26
+sS'Christopher Calger'
+p27
+S'christopher.calger@enron.com'
+p28
+sS'Ben Glisan'
+p29
+S'ben.glisan@enron.com'
+p30
+sS'Kenneth Lay'
+p31
+S'kenneth.lay@enron.com'
+p32
+sS'Kevin Hannon'
+p33
+S'kevin.hannon@enron.com'
+p34
+sS'Paula Rieker'
+p35
+S'paula.rieker@enron.com'
+p36
+s.
