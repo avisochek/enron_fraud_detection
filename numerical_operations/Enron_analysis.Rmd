@@ -1,0 +1,90 @@
+---
+title: "EDA of enron dataset without text"
+author: "Allan Visochek"
+date: "05/21/2015"
+output: html_document
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+enron <- read.csv("/home/allan/Desktop/enron_fraud_detection/data/data.csv")
+enron <- subset(enron,!(poi==0))
+enron$expenses <- as.numeric(enron$expenses) ## I don't think this works... I'll have to find a new way of transforming these variables, or just ignore them...
+enron$from_this_person_to_poi <- as.numeric(enron$from_this_person_to_poi )
+enron$director_fees <- as.numeric(enron$director_fees )
+library(ggplot2)
+```
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+summary(enron$poi)
+
+ggplot(aes(x=salary),data=enron)+geom_histogram(aes(fill=poi),alpha=.5,position='identity')
+by(enron$salary,enron$poi,summary)
+
+ggplot(aes(x=to_messages),data=enron)+geom_histogram(aes(fill=poi),alpha=.5,position='identity')+scale_x_log10()
+by(enron$to_messages,enron$poi,summary)
+
+ggplot(aes(x=deferral_payments),data=enron)+geom_histogram(aes(fill=poi),alpha=.5,position='identity')
+by(enron$deferral_payments,enron$poi,summary)
+
+ggplot(aes(x=total_payments),data=enron)+geom_histogram(aes(fill=poi),alpha=.5,position='identity')+scale_x_log10()
+by(enron$total_payments,enron$poi,summary)
+
+ggplot(aes(x=exercised_stock_options),data=enron)+geom_histogram(aes(fill=poi),alpha=.5,position='identity')+scale_x_log10()
+summary(enron$exercised_stock_options)
+
+ggplot(aes(x=bonus),data=enron)+geom_histogram(aes(fill=poi),alpha=.5,position='identity')+scale_x_log10()
+summary(enron$bonus)
+
+ggplot(aes(x=shared_receipt_with_poi+10),data=enron)+geom_histogram(aes(fill=poi),alpha=.5,position='identity',binwidth=.5)+scale_x_log10()
+summary(enron$shared_receipt)
+
+ggplot(aes(x=restricted_stock_deferred),data=enron)+geom_histogram(aes(fill=poi),alpha=.5,position='identity')
+by(enron$restricted_stock_deferred,enron$poi,summary)
+
+ggplot(aes(x=total_stock_value),data=enron)+geom_histogram(aes(fill=poi),alpha=.5,position='identity')+scale_x_log10()
+by(enron$salary,enron$poi,summary)
+
+ggplot(aes(x=expenses),data=enron)+geom_histogram(aes(fill=poi),alpha=.5,position='identity')
+  coord_flip()
+by(enron$expenses,enron$poi,summary)
+## not sure what to do with this..., 
+
+ggplot(aes(x=loan_advances),data=enron)+geom_histogram(aes(fill=poi),alpha=.5,position='identity')
+by(enron$loan_advances,enron$poi,summary)
+## definately eliminate this one, not enough data to indicate one way or another...
+
+ggplot(aes(x=from_messages),data=enron)+geom_histogram(aes(fill=poi),alpha=.5,position='identity')+scale_x_log10()
+summary(enron$salary)
+
+ggplot(aes(x=from_this_person_to_poi),data=enron)+geom_histogram(aes(fill=poi),alpha=0.5, position='identity')+scale_x_log10()
+summary(enron$salary)
+
+ggplot(aes(x=director_fees),data=enron)+geom_histogram(aes(fill=poi),alpha=0.5, position='identity')
+by(enron$director_fees,enron$poi,summary)
+## just don't use this, way too many NAs
+
+ggplot(aes(x=-deferred_income),data=enron)+geom_histogram(aes(fill=poi),alpha=0.5, position='identity')
+by(enron$deferred_income,enron$poi,summary)
+
+ggplot(aes(x=long_term_incentive),data=enron)+geom_histogram(aes(fill=poi),alpha=0.5, position='identity')#+scale_x_log10()
+by(enron$long_term_incentive,enron$poi,summary)
+
+ggplot(aes(x=from_poi_to_this_person),data=enron)+geom_histogram(aes(fill=poi),alpha=0.5, position='identity')+scale_x_log10()
+by(enron$from_poi_to_this_person,enron$poi,summary)
+```
+
+```{r, echo=FALSE}
+ggplot(aes(x=bonus/salary),data=enron)+
+  geom_histogram(aes(fill=poi),alpha=.5,position='identity')
+
+ggplot(aes(x=exercised_stock_options/total_stock_value),data=enron)+
+  geom_histogram(aes(fill=poi),alpha=.5,position='identity')
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
