@@ -1,0 +1,41 @@
+udacity, Machine Learning: supervised learning SL 5-Ensemble B&B
+https://www.udacity.com/course/viewer#!/c-ud675/l-367378584/m-367548596
+
+
+how to sort a list in python by the nth element of each list... 
+http://stackoverflow.com/questions/17555218/python-how-to-sort-a-list-of-lists-by-the-fourth-element-in-each-list
+
+how to delete n elements from list...
+http://stackoverflow.com/questions/15715912/remove-the-last-n-elements-of-a-list
+
+getting rid of nan's after normalization with sklearn... 
+http://stackoverflow.com/questions/11441751/how-to-get-svms-to-play-nicely-with-missing-data-in-scikit-learn
+
+
+
+#############################################
+##############################################3
+###################################3
+SKLEARN DOCS...
+
+
+normalizer feature...
+http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.Normalizer.html#sklearn.preprocessing.Normalizer
+
+
+used this page to figure out how to get the sample weights parameter to work...
+http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html
+
+
+used this in the process of figuring out where the files were...
+http://stackoverflow.com/questions/269795/how-do-i-find-the-location-of-python-module-sources
+
+how to list items in a directory...
+http://stackoverflow.com/questions/3207219/how-to-list-all-files-of-a-directory-in-python
+
+count vectorizer...
+http://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html
+
+
+
+
