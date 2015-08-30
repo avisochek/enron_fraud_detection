@@ -6,7 +6,6 @@ sys.path.insert(0,"/home/allan/Desktop/enron_fraud_detection/tools")
 import math
 from feature_format import featureFormat, targetFeatureSplit
 from tester import test_classifier, dump_classifier_and_data
-from merge_data import merge
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
@@ -26,15 +25,7 @@ features_list = ["poi",
 "expenses", 
 "bonus", 
 "restricted_stock",
-"email_feature",
-"word_pca_0","word_pca_1","word_pca_2","word_pca_3","word_pca_4","word_pca_5","word_pca_6",
-"word_pca_7","word_pca_8","word_pca_9","word_pca_10","word_pca_11","word_pca_12","word_pca_13",
-"word_pca_14","word_pca_15","word_pca_16","word_pca_17","word_pca_18","word_pca_19",
-"word_pca_20","word_pca_21","word_pca_22","word_pca_23","word_pca_24","word_pca_25",
-"word_pca_26","word_pca_27","word_pca_28","word_pca_29","word_pca_30","word_pca_31",
-"word_pca_32","word_pca_33","word_pca_34","word_pca_35","word_pca_36","word_pca_37",
-"word_pca_38","word_pca_39","word_pca_40","word_pca_41","word_pca_42","word_pca_43",
-"word_pca_44"]
+"email_feature"]
 
 ### Load the dictionary containing the dataset
 data_dict = pickle.load(open("final_project_dataset.pkl", "r") )
@@ -62,17 +53,19 @@ for person in data_dict.keys():
             person_features.append(np.nan)
     my_features.append(person_features)
 
-### replace NaN's w/ 0 and outliers with the non outlier mean.
 my_features=np.array(my_features)
-for i in range(len(my_features[0])):
-    col = my_features[:,i]
-    nonancol = np.array(col[col!="NaN"])
-    percentile = np.percentile(nonancol,90)
-    outliers=(col > percentile)
-    non_outlier_mean= col[(~outliers).nonzero()].mean()
-    col_new=col*1
-    col_new[outliers.nonzero()] = non_outlier_mean
-    my_features[:,i]=col_new*1
+
+### replace NaN's w/ 0 and outliers with the non outlier mean.
+
+#for i in range(len(my_features[0])):
+#    col = my_features[:,i]
+#    nonancol = np.array(col[col!="NaN"])
+#    percentile = np.percentile(nonancol,90)
+#    outliers=(col > percentile)
+#    non_outlier_mean= col[(~outliers).nonzero()].mean()
+#    col_new=col*1
+#    col_new[outliers.nonzero()] = non_outlier_mean
+#    my_features[:,i]=col_new*1
 #for i in my_features:
 #    for j in i:
 #        if not isinstance(j,float):
@@ -115,9 +108,8 @@ word_data = pickle.load(open("/home/allan/Desktop/enron_fraud_detection/data/qua
 words = word_data.pop('words')
 word_names = np.array(word_data.keys())
 ## filter out names, emails, and words that don't seem to carry useful information...
-remove_list=np.array(["stdolelink", "ene", "te", "skillingcorpenronenron", "despain", "berney", 'clwellhouect', 'elliot', 'frevertnaenronenron', 'mcmahonhouect', 'prestohouectect', 'rodney', 'scrimshawlonectect', "colwellhouectect", "coxenron", 'glisan', "billi", u'baxterhouectect', u'belden', u'benjamin',  u'calger', u'causeycorpenronenron', u'deffnerhouectect', u'delaineyhouectect', u'dietrichhouectect', u'dori', u'eugen', u'fastowhouectect',  u'glisanhouectect', u'hannonenron', u'janic', u'jefferi', u'joanni', u'jodi', u'jonathan', u'kitchenhouectect', u'koenig',  u'las', u'laycorpenronenron', u'mccullough', u'milnthorpcalectect',  u'montana', u'mrhanaenronenron', u'parson', u'sweeney', u'theresa', u'tion', u'warren', u'williamson', u'wong', u'yzaguirrenaenronenron', u"barney", u'bowenhouectect', u'cc20', u'jskillinpst', u'mckinsey', u'worthwhil', u'aa', u'ac', u'ae', u'al20', u'ami', u'announcementsenron', u'ar', u'arnold', u'arnoldhouectect', u'barbara', u'baughmanhouectect', u'beldenhouectect', u'betti', u'blvd', u'brandon', u'brenda', u'brownenron', u'business20', u'buyhouectect', u'calgerpdxectect', u'carson', u'carter', u'catherin', u'cathi', u'ch', u'chapmanhouectect', u'cogen', u'com', u'cr', u'davishouectect',u'delaineyhoue', u'divid', u'duranhouectect', u'dysonlonectect', u'elliott', u'erica', u'felicia', u'fitzpatrick', u'fletcher', u'foster', u'fosterhouectect', u'freeman', u'fuller', u'germani', u'gloria', u'goldlonectect', u'gort', u'griffin', u'gus', u'hannon', u'hodg', u'hughesenrondevelop', u'jane', u'janin', u'jeann', u'jill', u'jskillinnsf', u'kate', u'katherin', u'kathi', u'kathleen', u'kelli', u'kenni', u'keohan', u'king', u'kishkil', u'klay', u'koenigcorpenronenron', u'kopperhouectect', u'lauren',
-u'lavoratocorpenronenron', u'layenron', u'll', u'lloyd', u'lori', u'loui', u'mailtoimceanotesenron20announcementscorpenron40enronenroncom', u'maureen', u'max', u'melissa', u'milnthorp', u'mintzhouectect', u'mitch', u'mo', u'moorehouectect', u'nick', u'norman', u'nron', u'nt', u'ot', u'oxleyhouectect', u'paihoueese', u'palmer', u'pamela', u'patterson', u'peaker', u'perkin', u'philip', u'pipercorpenronenron', u'ppas', u'pricehouectect', u'reckhouectect', u'rex', u'riceenron', u'ride', u'rieker', u'rita', u'rode', u'rosale', u'rose', u'rosi', u'sagerhouectect', u'schneider', u'schultz', u'sempra', u'sent09friday', u'sera',
-u'seracorpenronenron', u'seyfri', u'sharron', u'skillingenron', u'stubblefield', u'sutton', u'suzann', u'swerzbin', u'sylvia', u'tawneyhouectect', u'thodecorpenronenron', u'thur', u'timothi', u'valencia', u'valley', u'vega', u'vincent', u'wendi', u'westbrook', u'westin', u'whilst', u'whitehoueese', u'wigg', u'wolf', u'wolfehouectect', u'worldwid', u'worldwideenron'])
+with open("remove_list.pkl","r") as f:
+	remove_list=np.array(pickle.load(f))
 
 remove_ind = words.searchsorted(remove_list)
 keep_ind = np.arange(len(words))
@@ -133,7 +125,7 @@ for row in word_data.values():
     word_values.append((row.toarray()[0]*1.).tolist())
 word_values=np.array(word_values)
 
-print "asdf:",sum(word_labels)
+#print "asdf:",sum(word_labels)
 
 ##remove words indicated above and 
 words=words[keep_ind]
@@ -178,7 +170,7 @@ for i in range(len(names)):
             my_dataset[names[i]]["word_pca_"+str(j)]=word_pca[(word_names==names[i]).nonzero(),j]
         else:
             my_dataset[names[i]]["word_pca_"+str(j)]=0.
-word_pca_features = ["word_pca_"+str(i) for i in range(len(word_pca[0]))]
+best_word_pca_features = ["word_pca_"+str(i) for i in range(len(word_pca[0]))]
 ### Extract features and labels from dataset for local testing
 #data = featureFormat(my_dataset,["poi"]+ features_list, sort_keys = True)
 #labels, features = targetFeatureSplit(data)
@@ -208,10 +200,13 @@ adb_base = DecisionTreeClassifier()
 ### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
 
 #test_classifier(clf, my_dataset,["poi"]+ features_list)
-#test_classifier(dt, my_dataset,["poi"]+ word_pca_features + features_list+["email_feature"])
+print "Decision Tree with financial features:"
+test_classifier(dt, my_dataset,features_list)
 #test_classifier(gnb, my_dataset,["poi"]+ word_pca_features)#+ features_list+["email_feature"])
-#test_classifier(knn, my_dataset,["poi"]+features_list+["email_feature"])
-#test_classifier(rfc, my_dataset,["poi"]+ word_feature_names.tolist() + features_list+["email_feature"])
+print "K Neighbors Classifier with word_pca_features and financial features:"
+test_classifier(knn, my_dataset,["poi"]+features_list)
+print "Random Forest Classifier with all word features:"
+test_classifier(rfc, my_dataset,["poi"]+ word_feature_names.tolist())
 #test_classifier(adb, my_dataset,["poi"]+ word_pca_features+ features_list+["email_feature"])
 
 ### Task 6: Combine Classifiers and features for numerical and text datasets into a single metaclassifier...
@@ -229,7 +224,7 @@ class FeatureSelector(BaseEstimator, TransformerMixin):
 # create Base Classifiers Using Pipeline...
 from sklearn.pipeline import Pipeline
 base_clf_1=Pipeline([("knntransform",FeatureSelector([i for i in range(5)]) ), ("knn",knn)])
-base_clf_2=Pipeline([("gnbtransform",FeatureSelector([i for i in range(50)])),("gnb",gnb)])
+base_clf_2=Pipeline([("gnbtransform",FeatureSelector([i+5 for i in range(40)])),("gnb",gnb)])
 
 # create a CombinedClassifier class in order to merge predictions of each classifier...
 from sklearn.base import ClassifierMixin
@@ -251,10 +246,60 @@ class CombinedClassifier(BaseEstimator):
                 meta_predictions.append(i)
         return meta_predictions
 
+print "Combined Classifier with Word PCA and financial features:"
 clf = CombinedClassifier(base_clf_1,base_clf_2)
-#test_classifier(clf, my_dataset, features_list)
-#test_classifier(GaussianNB(), my_dataset, ["poi"]+ word_pca_features)
+test_classifier(clf, my_dataset, features_list + best_word_pca_features)
+
+
+### create a filtered_gnb classifier, to perform feature selection processes that use poi information within classifier, to make classification more "fair".
+#def remove_low_frequency_words(X):
+#    X=np.array(X)
+#    keep_ind=np.sum(X>0.,0)<10
+#    return X[:,keep_ind]
+
+#class FilteredGNB(BaseEstimator):
+#    def __init__(self,word_transformer,pca,pca_transformer,clf):
+#        self.wt = word_transformer
+#	self.pca = pca
+#        self.pt = pca_transformer
+#        self.clf = clf
+#	self.X_fit=[]
+#        self.y_fit=[]
+            
+#    def fit(self,X,y):
+#        #x=remove_low_frequency_words(X)
+#        self.X_fit=X
+#        self.y_fit=y
+
+#    def predict(self,X):
+#        self.wt.fit(self.X_fit,self.y_fit)
+#        #print self.X_fit+X
+#        best_words=self.wt.transform(self.X_fit+X)
+#	word_pca = self.pca.fit_transform(best_words)
+#        qqq = np.array(word_pca)[np.arange(len(self.y_fit)),:]
+#        best_pca_train = self.pt.fit_transform(qqq,self.y_fit)
+#	self.clf.fit(best_pca_train,self.y_fit)
+#        #x=remove_low_frequency_words(X)
+#        best_pca_test = self.pt.transform(np.array(word_pca)[np.arange(len(X))+len(self.X_fit)])
+#	#word_pca = self.pca.transform(best_words)
+#        #best_pca = self.pt.transform(word_pca)
+#        return self.clf.predict(best_pca_test)
+
+## create filtered_gnb classifier
+#word_transformer = SelectKBest(f_regression,200)
+#pca              = PCA(n_components=86)
+#pca_transformer  = SelectKBest(f_classif,20)
+#classifier1      = DecisionTreeClassifier(min_samples_leaf=2)
+#classifier2      = GaussianNB()
+#classifier3      = KNeighborsClassifier()
+#filtered_gnb=FilteredGNB(word_transformer,pca,pca_transformer,classifier1)
+
+#print "FILTERED GNB CLASSIFIER USING ALL WORD FEATURES"
+#test_classifier(filtered_gnb, my_dataset, ["poi"]+ words.tolist(),folds=5)
+
+print "Gaussian NB with Word PCA Features:"
+test_classifier(GaussianNB(), my_dataset, ["poi"]+ best_word_pca_features)
 
 ### Dump your classifier, dataset, and features_list so 
 ### anyone can run/check your results.
-dump_classifier_and_data(GaussianNB(), my_dataset, ["poi"]+word_pca_features)
+dump_classifier_and_data(GaussianNB(), my_dataset, ["poi"]+best_word_pca_features)

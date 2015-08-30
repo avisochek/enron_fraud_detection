@@ -2,7 +2,6 @@ Summarize for us the goal of this project and how machine learning is useful in 
 
 	The objective of this project is to develop an algorithm to identify people who were "persons of interest" in the enron fraud investigation from two datasets.
 	The first dataset contains numerical features obtained from the record of the investigation on findlaw.com, as well as the enron corpus, mentioned below. In this dataset, a person is considered to be a "poi" if they are convicted, fined or reached a settlement in the enron investigation. This information is obtained from a 2005 USA Today article. A few people who should be pois are missed here, namely Lou Pai, who had reached a settlement in 2008, John Baxter, who had committed suicide shortly after testifying, and Andrew Fastow, who agreed to testify in exchange for immunity, but is well known to have been deeply involved in financial fraud. I changed these individuals to pois in the dataset. With the inclusion of these three individuals, 21 of the individuals in this dataset were pois, and 121 were non-poi (so 14.6% pois).
-	There were a number of exceptionally high values in each category. These values did not appear to be erroneous, but rather represent the high level executives, most of whom were not pois. Because there is little data, I replaced the top ten percent of values from each numerical feature with the mean of the remaining values, rather than removing the data point altogether.
 	There were also a number of values that were missing. In the case of this dataset, the lack of a feature is likely useful information. As such, each missing value was replaced with 0.
 	Finally, there were a couple entries in the dataset that did not belong, namely "total" and "the travel agency in the park". These were removed.
 
@@ -35,20 +34,21 @@ What features did you end up using in your POI identifier, and what selection pr
 	(see text_operations/get_email_text.ipynb for original feature extraction code.)
 	-->extracted all words in the "from_emails" folder of each individual in the dataset (in order to get as close as possible of a representation of the individual's vocabulary).
 	-->assembled collective words into array, ran through a TFIDF vectorizer, and extracted the resulting feature values and names.	
-	-->removed all words used by fewer than 10 individuals, and greater than 30 individuals.
+	-->removed all words used by fewer than 10 individuals.
+	(Note that previous observation revealed that none of the selected words were used exclusively by pois.)
 	-->Normalized word features using min_max scaler.
 	-->Iteratively fit word values using SelectKBest with f_classif, removing all words representing name's, email addresses, or words with unclear significance.
 	-->Created a pca decomposition of the word values resulting from the previous step.
 	-->Normalized Pca components using min_max scaler.
 	-->Fit the resulting pca features using SelectKBest with f_classif.
 	-->Tuned the number of word and pca features obtained from SelectKBest to the optimal values.
-	This process yielded 20 features used in the classification. Ultimately, this feature set (the pca features obtained from the email data) was used in the classification, since these features alone performed much better on the accuracy, precision and recall than any other combination of features and classifier that was tried.
+	This process yielded 45 features. Ultimately, this feature set (the pca features obtained from the email data) was used in the classification, since these features alone performed much better on the accuracy, precision and recall than any other combination of features and classifier that was tried.
 
 
 
 What algorithm did you end up using?  What other one(s) did you try? [relevant rubric item: “pick an algorithm”]
 
-	A gaussian naive bayes classifier was used on the pca features obtained from the email dataset. I also tried a dicision tree classifier, a k nearest neighbors classifier, a random forest classifier, an adaboost classifier, and a gaussian naive bayes classifier on the numerical dataset.
+	A gaussian naive bayes classifier was used on the pca features obtained from the email dataset. I also tried (iteratively) a dicision tree classifier, a k nearest neighbors classifier, a random forest classifier, an adaboost classifier, and a gaussian naive bayes classifier on various combinations of the data.
 	None of the classifiers used with the numerical dataset performed as well as the Gaussian Naive Bayes algorithm on the email dataset in accuracy and recall. K nearest neighbors, using the numerical dataset, was capable of acheiving perfect recall, but with a very low precision.
 	In addition to that, I created and tested my own classifier that combined the results of Gaussian naive bayes on the email dataset with the results of k nearest neighbors on the numerical dataset. This however resulted in a lower preformance.
 
@@ -63,8 +63,7 @@ What does it mean to tune the parameters of an algorithm, and what can happen if
 What is validation, and what’s a classic mistake you can make if you do it wrong?  How did you validate your analysis?  [relevant rubric item: “validation strategy”]
 
 	Validation is the process of evaluating the ability of a classifier to generalize to a larger population, by testing it on a dataset that is separate, but similar to the one it was trained on. Improper validation may allow for an overfit classifier to pass as a highly accurate solution.
-	Since this particular dataset was so small, k-fold cross validation was used in order to iteratively train and test the classifier on several different training and testing sets from the same dataset.
-	Also, because there were many more non-poi's than there were poi's, and because we are concerned mainly with detecting fraud, precision and recall were taken into account along with the measure of accuracy in determining the goodness of the fit.
+	Since this particular dataset and the distribution of pois was vary small, stratified shuffle split was used to create multiple different randomized training and testing sets from the same dataset while preserving the original distribution of pois. The classifier was then iteratively trained and tested on each of the sets, and the results were aggregated.
 
 Give at least 2 evaluation metrics, and your average performance for each of them.  Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance. [relevant rubric item: “usage of evaluation metrics”]
 
